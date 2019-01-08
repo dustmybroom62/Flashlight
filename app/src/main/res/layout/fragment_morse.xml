@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@android:color/black"
+    android:padding="10dp"
+    tools:context=".MainActivity$PlaceholderFragment">
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Message:"
+        android:textColor="@android:color/background_light"
+        />
+
+    <EditText
+        android:id="@+id/etMorseMessage"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@id/tvMessage"
+        android:background="@android:color/darker_gray"
+        android:gravity="left|top"
+        android:inputType="textMultiLine"
+        android:singleLine="false"
+        android:textSize="30dp"
+        tools:text="message" />
+    <CheckBox
+        android:id="@+id/chkMorseRepeat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etMorseMessage"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/darker_gray"
+        android:text="Repeat"
+        />
+    <Switch
+        android:id="@+id/switchMorse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etMorseMessage"
+        android:layout_toRightOf="@id/chkMorseRepeat"
+        android:textOff="Off"
+        android:textOn="On"
+        android:textColor="@android:color/white"
+        android:trackTint="@android:color/background_light"
+        android:thumbTint="@color/switch_color"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="60dp"
+        android:scaleX="2"
+        android:scaleY="2"
+        />
+
+    <EditText
+        android:id="@+id/etMorseDuration"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/etMorseMessage"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/darker_gray"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        tools:text="200" />
+    <TextView
+        android:id="@+id/tvMorseDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/darker_gray"
+        android:text="Duration"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="50dp"
+        android:layout_toRightOf="@id/switchMorse"
+        android:layout_below="@id/etMorseMessage"
+        />
+
+</RelativeLayout>

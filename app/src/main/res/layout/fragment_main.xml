@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    tools:context=".MainActivity$PlaceholderFragment">
+
+    <TextView
+        android:id="@+id/txtViewSos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SOS  "
+        android:textColor="@android:color/background_light"
+        android:textSize="24dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"
+        />
+    <Switch
+        android:id="@+id/switchSos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/txtViewSos"
+        android:textOff="Off"
+        android:textOn="SOS"
+        android:textColor="@android:color/white"
+        android:trackTint="@android:color/background_light"
+        android:thumbTint="@color/switch_color"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"
+        android:scaleX="2"
+        android:scaleY="2"
+        />
+
+    <Switch
+        android:id="@+id/switch1"
+        android:checked="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:rotation="270"
+        android:scaleX="3"
+        android:scaleY="3"
+        android:switchMinWidth="40dp"
+        android:textOff="Off"
+        android:textOn="On"
+        android:thumbTint="@color/switch_color"
+        android:trackTint="@android:color/background_light"
+        android:textColor="@android:color/black"
+        />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_above="@id/switch1"
+        android:layout_marginBottom="100dp"
+        android:layout_centerHorizontal="true"
+        android:text="Off"
+        android:textAlignment="center"
+        android:textColor="@android:color/background_light"
+        android:textSize="24dp"
+        tools:text="Power" />
+</RelativeLayout>

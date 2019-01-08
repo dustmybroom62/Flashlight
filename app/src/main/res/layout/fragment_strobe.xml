@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@android:color/black"
+    android:padding="10dp"
+    tools:context=".MainActivity$PlaceholderFragment">
+    <TextView
+        android:id="@+id/tvStrobeDurationOn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        tools:text="On: 15 ms"
+        android:textColor="@android:color/background_light"
+        android:gravity="center_horizontal"
+        />
+    <LinearLayout
+        android:id="@+id/llLeft"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        >
+        <SeekBar
+            android:id="@+id/seekBarOn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="100"
+            android:paddingTop="10dp"
+            android:paddingLeft="5dp"
+            android:paddingBottom="10dp"
+            android:paddingRight="15dp"
+            android:progressBackgroundTint="@android:color/background_light"
+            android:max="100"
+            android:progress="15"
+            android:rotation="0"
+            />
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/tvStrobeDurationOff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        tools:text="Off: 25 ms"
+        android:textColor="@android:color/background_light"
+        android:gravity="center_horizontal"
+        />
+    <LinearLayout
+        android:id="@+id/llRight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        >
+        <SeekBar
+            android:id="@+id/seekBarOff"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="100"
+            android:paddingTop="10dp"
+            android:paddingLeft="5dp"
+            android:paddingBottom="10dp"
+            android:paddingRight="15dp"
+            android:progressBackgroundTint="@android:color/background_light"
+            android:max="100"
+            android:progress="25"
+            android:rotation="0"
+            />
+
+    </LinearLayout>
+
+    <Switch
+        android:id="@+id/swStrobe"
+        android:checked="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_weight="100"
+        android:layout_gravity="center_horizontal"
+        android:rotation="270"
+        android:scaleY="3"
+        android:scaleX="3"
+        android:textOff="Off"
+        android:textOn="On"
+        android:thumbTint="@color/switch_color"
+        android:trackTint="@android:color/background_light"
+        android:textColor="@android:color/black"
+        />
+
+</LinearLayout>
