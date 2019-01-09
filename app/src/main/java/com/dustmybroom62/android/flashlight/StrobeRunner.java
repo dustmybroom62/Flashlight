@@ -24,6 +24,8 @@ package com.dustmybroom62.android.flashlight;
  */
 
 import android.hardware.Camera;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 
 public class StrobeRunner implements Runnable {
     public static StrobeRunner getInstance()
@@ -36,16 +38,23 @@ public class StrobeRunner implements Runnable {
 
     public volatile boolean requestStop = false;
     public volatile boolean isRunning = false;
+    public volatile boolean playSound = false;
     public volatile Delay[] pattern = {new Delay(0, 0)};
     public volatile boolean patternRepeat = false;
     public volatile Delay[] patternAlt = {};
 //    public volatile StrobeLightConfig controller;
     public volatile String errorMessage = "";
 
-    private void DoPatternElement(Camera cam, Camera.Parameters pOn, Camera.Parameters pOff, double delayOn, double delayOff) throws InterruptedException {
+    private void DoPatternElement(Camera cam, Camera.Parameters pOn, Camera.Parameters pOff, ToneGenerator toneGenerator, boolean useSound
+            , double delayOn, double delayOff) throws InterruptedException {
         if (delayOn > 0) {
+            toneGenerator.stopTone();
+            if (useSound) {
+                toneGenerator.startTone(ToneGenerator.TONE_DTMF_9);
+            }
             cam.setParameters(pOn);
             Thread.sleep(Math.round(delayOn));
+            toneGenerator.stopTone();
         }
 
         if (delayOff > 0) {
@@ -64,6 +73,7 @@ public class StrobeRunner implements Runnable {
 
         Camera cam = Camera.open();
         cam.startPreview();
+        ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_DTMF, 100);
 
         Camera.Parameters pOn = cam.getParameters(), pOff = cam.getParameters();
 
@@ -73,13 +83,13 @@ public class StrobeRunner implements Runnable {
         while(!requestStop) {
             try {
                 for (int i = 0; !requestStop && null != pattern && i < pattern.length; i++) {
-                    DoPatternElement(cam, pOn, pOff, pattern[i].on(), pattern[i].off());
+                    DoPatternElement(cam, pOn, pOff, toneGenerator, playSound, pattern[i].on(), pattern[i].off());
                 }
                 if (requestStop) {
                     break;
                 }
                 for (int i = 0; !requestStop && null != pattern && i < patternAlt.length; i++) {
-                    DoPatternElement(cam, pOn, pOff, patternAlt[i].on(), patternAlt[i].off());
+                    DoPatternElement(cam, pOn, pOff, toneGenerator, playSound, patternAlt[i].on(), patternAlt[i].off());
                 }
                 if (!patternRepeat) {
                     break;

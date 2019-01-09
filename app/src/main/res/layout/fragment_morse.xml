@@ -31,22 +31,37 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/etMorseMessage"
         android:layout_marginTop="10dp"
+        android:paddingRight="4dp"
         android:background="@android:color/darker_gray"
         android:text="Repeat"
         />
-    <Switch
-        android:id="@+id/switchMorse"
+
+    <CheckBox
+        android:id="@+id/chkSoundOn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/etMorseMessage"
         android:layout_toRightOf="@id/chkMorseRepeat"
+        android:layout_marginTop="10dp"
+        android:paddingRight="4dp"
+        android:layout_marginLeft="4dp"
+        android:background="@android:color/darker_gray"
+        android:text="Sound"
+        />
+
+    <Switch
+        android:id="@+id/switchMorse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/chkMorseRepeat"
         android:textOff="Off"
         android:textOn="On"
         android:textColor="@android:color/white"
         android:trackTint="@android:color/background_light"
         android:thumbTint="@color/switch_color"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="60dp"
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true"
+        android:rotation="270"
         android:scaleX="2"
         android:scaleY="2"
         />
@@ -69,8 +84,8 @@
         android:textColor="@android:color/darker_gray"
         android:text="Duration"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="50dp"
-        android:layout_toRightOf="@id/switchMorse"
+        android:layout_marginLeft="80dp"
+        android:layout_toRightOf="@id/chkSoundOn"
         android:layout_below="@id/etMorseMessage"
         />
 

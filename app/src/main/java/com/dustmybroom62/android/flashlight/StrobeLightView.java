@@ -27,7 +27,7 @@ public class StrobeLightView extends View
     private Button buttonOnLess;
     private Button buttonOnMore;
     private double frequency;
-    private boolean strobeIsOn = false;
+//    private boolean strobeIsOn = false;
     private final int maxSeekDelay = 200;
     private final int maxSeekFreq = 109;
     private Delay speed = new Delay(750,550, 1);
@@ -43,11 +43,11 @@ public class StrobeLightView extends View
     private void strobeOn() {
         settings.setStrobeOn(speed.onFactor);
         settings.setStrobeOff(speed.offFactor);
-        settings.serialize();
-        strobeIsOn = true;
+//        strobeIsOn = true;
         strobeRunner.pattern = new Delay[] {speed};
         strobeRunner.patternAlt = new Delay[]{};
         strobeRunner.patternRepeat = true;
+        strobeRunner.playSound = false;
         if (!strobeRunner.isRunning) {
             srThread = new Thread(strobeRunner);
             srThread.start();
@@ -55,7 +55,7 @@ public class StrobeLightView extends View
     }
     private void strobeOff() {
         strobeRunner.requestStop = true;
-        strobeIsOn = false;
+//        strobeIsOn = false;
     }
 
     private void showMessage(String msg) {
@@ -168,9 +168,6 @@ public class StrobeLightView extends View
                 if (fromUser) {
                     setSeekbarOnProgress(progress);
                     settings.setStrobeOn(progress);
-                    if (strobeIsOn) {
-                        settings.serialize();
-                    }
                 }
             }
         });
@@ -195,9 +192,6 @@ public class StrobeLightView extends View
                 if (fromUser) {
                     setSeekbarOffProgress(progress);
                     settings.setStrobeOff(progress);
-                    if (strobeIsOn) {
-                        settings.serialize();
-                    }
                 }
             }
         });

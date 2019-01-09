@@ -164,10 +164,12 @@ public class MainActivity extends AppCompatActivity {
         } else {
             requestCameraPermission();
         }
-        if (appStartup) {
-            appStartup = false;
-//            swPower.setChecked(true);
-        }
+    }
+
+    @Override
+    protected void onStop() {
+        settings.serialize();
+        super.onStop();
     }
 
     @Override
@@ -189,10 +191,12 @@ public class MainActivity extends AppCompatActivity {
         EditText etMorseMessage;
         EditText etMorseDuration;
         CheckBox chkMorseRepeat;
+        CheckBox chkSoundOn;
         TextView tvHello;
         private boolean flashOn = false;
         private boolean sosOn = false;
         private boolean morseOn = false;
+        private boolean appStartup = true;
         Thread srThread;
         private static final int TAB_LIGHT = 1;
         private static final int TAB_STROBE = 2;
@@ -260,6 +264,8 @@ public class MainActivity extends AppCompatActivity {
             etMorseDuration.setInputType(InputType.TYPE_CLASS_NUMBER);
             chkMorseRepeat = (CheckBox) rootView.findViewById(R.id.chkMorseRepeat);
             chkMorseRepeat.setChecked(settings.getMorseRepeat());
+            chkSoundOn = (CheckBox) rootView.findViewById(R.id.chkSoundOn);
+            chkSoundOn.setChecked(settings.getSoundOn());
 
             swMorse = (Switch) rootView.findViewById(R.id.switchMorse);
             swMorse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -284,11 +290,12 @@ public class MainActivity extends AppCompatActivity {
                         String msg = etMorseMessage.getText().toString();
                         settings.setMorseMessage(msg);
                         boolean repeat = chkMorseRepeat.isChecked();
+                        boolean soundOn = chkSoundOn.isChecked();
                         String szDuration = etMorseDuration.getText().toString();
                         double duration = Double.valueOf(szDuration);
                         settings.setMorseDuration(duration);
                         settings.setMorseRepeat(repeat);
-                        settings.serialize();
+                        settings.setSoundOn(soundOn);
                         setMorseOn(msg, duration, repeat);
                     } else {
                         morseOn = false;
@@ -365,6 +372,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             strobeRunner = StrobeRunner.getInstance();
+            if (appStartup) {
+                appStartup = false;
+                swPower.setChecked(true);
+            }
             return rootView;
         }
 
@@ -373,6 +384,7 @@ public class MainActivity extends AppCompatActivity {
                 strobeRunner.pattern = new Delay[]{new Delay(1, 0, 250)};
                 strobeRunner.patternAlt = new Delay[]{};
                 strobeRunner.patternRepeat = true;
+                strobeRunner.playSound = false;
                 if (!strobeRunner.isRunning) {
                     srThread = new Thread(strobeRunner);
                     srThread.start();
@@ -397,10 +409,10 @@ public class MainActivity extends AppCompatActivity {
 
         protected void setMorseOn(String msg, double morseCodeBaseMilliseconds, Boolean repeat) {
             try {
-                strobeRunner.patternRepeat = true;
+                strobeRunner.patternRepeat = repeat;
                 MorseCode.setBaseUnitMilliseconds(morseCodeBaseMilliseconds);
                 strobeRunner.pattern = MorseCode.BuildMorseCodeDelayArray(msg);
-                //strobeRunner.patternAlt = MorseCode.BuildMorseCodeDelayArray(" ");
+                strobeRunner.playSound = settings.getSoundOn();
                 if (!strobeRunner.isRunning) {
                     srThread = new Thread(strobeRunner);
                     srThread.start();

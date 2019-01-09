@@ -71,6 +71,15 @@ public class Settings {
         _morseRepeat = morseRepeat;
     }
 
+    private static final String KEY_SOUND_ON = "SOUND_ON";
+    private static boolean _soundOn;
+
+    public boolean getSoundOn() {return _soundOn;}
+
+    public static void setSoundOn(boolean soundOn) {
+        _soundOn = soundOn;
+    }
+
     private static void deserialize() {
         SharedPreferences sharedPreferences = _context.getSharedPreferences(KEY_SHARED_SETTINGS, Context.MODE_PRIVATE);
         _morseMessage = sharedPreferences.getString(KEY_MORSE_MESSAGE, null);
@@ -78,6 +87,7 @@ public class Settings {
         _strobeOn = sharedPreferences.getFloat(KEY_STROBE_ON, 40f);
         _strobeOff = sharedPreferences.getFloat(KEY_STROBE_OFF, 40f);
         _morseRepeat = sharedPreferences.getBoolean(KEY_MORSE_REPEAT, false);
+        _soundOn = sharedPreferences.getBoolean(KEY_SOUND_ON, false);
     }
 
     public void serialize() {
@@ -88,6 +98,7 @@ public class Settings {
         spEditor.putFloat(KEY_STROBE_ON, (float) _strobeOn);
         spEditor.putFloat(KEY_STROBE_OFF, (float) _strobeOff);
         spEditor.putBoolean(KEY_MORSE_REPEAT, _morseRepeat);
+        spEditor.putBoolean(KEY_SOUND_ON, _soundOn);
         spEditor.apply();
     }
 }
