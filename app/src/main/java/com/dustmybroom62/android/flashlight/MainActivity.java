@@ -183,7 +183,6 @@ public class MainActivity extends AppCompatActivity {
      * A placeholder fragment containing a simple view.
      */
     public static class PlaceholderFragment extends Fragment {
-        StrobeLightView strobeLightView;
         TextView tv1;
         Switch swPower;
         Switch swSos;
@@ -192,15 +191,12 @@ public class MainActivity extends AppCompatActivity {
         EditText etMorseDuration;
         CheckBox chkMorseRepeat;
         CheckBox chkSoundOn;
-        TextView tvHello;
         private boolean flashOn = false;
         private boolean sosOn = false;
         private boolean morseOn = false;
         private boolean appStartup = true;
         Thread srThread;
         private static final int TAB_LIGHT = 1;
-        private static final int TAB_STROBE = 2;
-        private static final int TAB_MORSE = 3;
 
         /**
          * The fragment argument representing the section number for this
@@ -232,84 +228,8 @@ public class MainActivity extends AppCompatActivity {
             switch (sectionNumber) {
                 case TAB_LIGHT:
                     return getViewLight(inflater, container);
-                case TAB_STROBE:
-                    return getViewStrobe(inflater, container);
-                case TAB_MORSE:
-                    return getViewMorse(inflater, container);
             }
             return new View(getContext());
-        }
-
-        @NonNull
-        public View getViewStrobe(LayoutInflater inflater, ViewGroup container) {
-            View rootView = inflater.inflate(R.layout.fragment_strobe, container, false);
-            strobeLightView = new StrobeLightView(rootView.getContext());
-            strobeLightView.hasCameraRights = hasCameraRights;
-            strobeLightView.Init(rootView);
-//            tvHello = (TextView) rootView.findViewById(R.id.tvHello);
-//            tvHello.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-
-            //strobeRunner = StrobeRunner.getInstance();
-            return rootView;
-        }
-
-        @NonNull
-        public View getViewMorse(LayoutInflater inflater, ViewGroup container) {
-            View rootView = inflater.inflate(R.layout.fragment_morse, container, false);
-            etMorseMessage = (EditText) rootView.findViewById(R.id.etMorseMessage);
-            etMorseMessage.setText(settings.getMorseMessage());
-            etMorseDuration = (EditText) rootView.findViewById(R.id.etMorseDuration);
-            int morseDuration = (int) settings.getMorseDuration();
-            etMorseDuration.setText(String.valueOf(morseDuration));
-            etMorseDuration.setInputType(InputType.TYPE_CLASS_NUMBER);
-            chkMorseRepeat = (CheckBox) rootView.findViewById(R.id.chkMorseRepeat);
-            chkMorseRepeat.setChecked(settings.getMorseRepeat());
-            chkSoundOn = (CheckBox) rootView.findViewById(R.id.chkSoundOn);
-            chkSoundOn.setChecked(settings.getSoundOn());
-
-            swMorse = (Switch) rootView.findViewById(R.id.switchMorse);
-            swMorse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (!hasCameraRights) {
-                        buttonView.setChecked(false);
-                        showMessage("Not Allowed: Flashlight requires Camera privelege.");
-                        return;
-                    }
-                    if (isChecked) {
-                        morseOn = true;
-                        if (null != swSos) {
-                            swSos.setChecked(false);
-                        }
-                        if (null != swPower) {
-                            swPower.setChecked(false);
-                        }
-                        if (null != tv1) {
-                            tv1.setText("Morse Code Mode");
-                        }
-                        String msg = etMorseMessage.getText().toString();
-                        settings.setMorseMessage(msg);
-                        boolean repeat = chkMorseRepeat.isChecked();
-                        boolean soundOn = chkSoundOn.isChecked();
-                        String szDuration = etMorseDuration.getText().toString();
-                        double duration = Double.valueOf(szDuration);
-                        settings.setMorseDuration(duration);
-                        settings.setMorseRepeat(repeat);
-                        settings.setSoundOn(soundOn);
-                        setMorseOn(msg, duration, repeat);
-                    } else {
-                        morseOn = false;
-                        if (!flashOn && !sosOn) {
-                            if (null != tv1) {
-                                tv1.setText("Off");
-                            }
-                            flashlightOff();
-                        }
-                    }
-                }
-            });
-            strobeRunner = StrobeRunner.getInstance();
-            return rootView;
         }
 
         @NonNull
@@ -430,6 +350,11 @@ public class MainActivity extends AppCompatActivity {
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
+        private static final int TAB_LIGHT = 0;
+        private static final int TAB_STROBE = 1;
+        private static final int TAB_MORSE = 2;
+        private StrobeLightView strobeLightView = new StrobeLightView();
+        private MorseView morseView = new MorseView();
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -439,7 +364,17 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            switch (position ) {
+                case TAB_LIGHT:
+                    return PlaceholderFragment.newInstance(position + 1);
+                case TAB_STROBE:
+                    strobeLightView.hasCameraRights = hasCameraRights;
+                    return strobeLightView;
+                case TAB_MORSE:
+                    morseView.hasCameraRights = hasCameraRights;
+                    return morseView;
+            }
+            return new PlaceholderFragment();
         }
 
         @Override

@@ -1,13 +1,18 @@
 package com.dustmybroom62.android.flashlight;
 
 
+import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.hardware.Camera;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-public class StrobeLightView extends View
+public class StrobeLightView extends Fragment
 {
     private Camera cam;
     private StrobeRunner strobeRunner;
@@ -36,9 +41,7 @@ public class StrobeLightView extends View
     public boolean hasCameraRights = false;
     private Thread srThread;
 
-    public StrobeLightView(Context context) {
-        super(context);
-    }
+    public StrobeLightView() { }
 
     private void strobeOn() {
         settings.setStrobeOn(speed.onFactor);
@@ -62,6 +65,13 @@ public class StrobeLightView extends View
         String s = msg.trim();
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_strobe, container, false);
+        Init(rootView);
+        return rootView;
+    }
 
     /** Called when the activity is first created. */
     public void Init(View viewToManage) {
