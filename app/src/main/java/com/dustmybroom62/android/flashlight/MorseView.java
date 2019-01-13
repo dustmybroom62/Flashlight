@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,55 @@ public class MorseView extends Fragment {
         chkMorseRepeat.setChecked(settings.getMorseRepeat());
         chkSoundOn = (CheckBox) rootView.findViewById(R.id.chkSoundOn);
         chkSoundOn.setChecked(settings.getSoundOn());
+
+        etMorseMessage.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                settings.setMorseMessage(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        etMorseDuration.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                double duration = Double.parseDouble(charSequence.toString());
+                settings.setMorseDuration(duration);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        chkSoundOn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                settings.setSoundOn(b);
+            }
+        });
+
+        chkMorseRepeat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                settings.setMorseRepeat(b);
+            }
+        });
 
         swMorse = (Switch) rootView.findViewById(R.id.switchMorse);
         swMorse.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

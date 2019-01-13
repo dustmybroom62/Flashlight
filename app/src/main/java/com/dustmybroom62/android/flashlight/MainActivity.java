@@ -178,173 +178,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        TextView tv1;
-        Switch swPower;
-        Switch swSos;
-        Switch swMorse;
-        EditText etMorseMessage;
-        EditText etMorseDuration;
-        CheckBox chkMorseRepeat;
-        CheckBox chkSoundOn;
-        private boolean flashOn = false;
-        private boolean sosOn = false;
-        private boolean morseOn = false;
-        private boolean appStartup = true;
-        Thread srThread;
-        private static final int TAB_LIGHT = 1;
-
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public PlaceholderFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-//            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-//            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            int sectionNumber = getArguments().getInt(ARG_SECTION_NUMBER);
-            switch (sectionNumber) {
-                case TAB_LIGHT:
-                    return getViewLight(inflater, container);
-            }
-            return new View(getContext());
-        }
-
-        @NonNull
-        public View getViewLight(LayoutInflater inflater, ViewGroup container) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            tv1 = (TextView) rootView.findViewById(R.id.textView1);
-            swPower = (Switch) rootView.findViewById(R.id.switch1);
-
-            swPower.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean on) {
-                    if (!hasCameraRights) {
-                        buttonView.setChecked(false);
-                        tv1.setText("Disabled");
-                        showMessage("Not Allowed: Flashlight requires Camera privelege.");
-                        return;
-                    }
-                    if (on) {
-                        flashOn = true;
-                        if (null != swMorse) {
-                            swMorse.setChecked(false);
-                        }
-                        swSos.setChecked(false);
-                        tv1.setText("On");
-                        flashlightOn();
-                    } else {
-                        flashOn = false;
-                        if (!sosOn && !morseOn) {
-                            tv1.setText("Off");
-                            flashlightOff();
-                        }
-                    }
-                }
-            });
-
-            swSos = (Switch) rootView.findViewById(R.id.switchSos);
-            swSos.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (!hasCameraRights) {
-                        buttonView.setChecked(false);
-                        showMessage("Not Allowed: Flashlight requires Camera privelege.");
-                        return;
-                    }
-                    if (isChecked) {
-                        sosOn = true;
-                        if (null != swMorse) {
-                            swMorse.setChecked(false);
-                        }
-                        swPower.setChecked(false);
-                        tv1.setText("SOS Mode");
-                        setMorseOn("sos ", settings.getMorseDuration(), true);
-                    } else {
-                        sosOn = false;
-                        if (!flashOn && !morseOn) {
-                            tv1.setText("Off");
-                            flashlightOff();
-                        }
-                    }
-                }
-            });
-            strobeRunner = StrobeRunner.getInstance();
-            if (appStartup) {
-                appStartup = false;
-                swPower.setChecked(true);
-            }
-            return rootView;
-        }
-
-        protected void flashlightOn() {
-            try {
-                strobeRunner.pattern = new Delay[]{new Delay(1, 0, 250)};
-                strobeRunner.patternAlt = new Delay[]{};
-                strobeRunner.patternRepeat = true;
-                strobeRunner.playSound = false;
-                if (!strobeRunner.isRunning) {
-                    srThread = new Thread(strobeRunner);
-                    srThread.start();
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                Snackbar.make(coordView, e.getMessage(), Snackbar.LENGTH_SHORT)
-                        .show();
-            }
-        }
-
-        protected void flashlightOff() {
-            try {
-                strobeRunner.requestStop = true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                Snackbar.make(coordView, e.getMessage(), Snackbar.LENGTH_SHORT)
-                        .show();
-            }
-        }
-
-        protected void setMorseOn(String msg, double morseCodeBaseMilliseconds, Boolean repeat) {
-            try {
-                strobeRunner.patternRepeat = repeat;
-                MorseCode.setBaseUnitMilliseconds(morseCodeBaseMilliseconds);
-                strobeRunner.pattern = MorseCode.BuildMorseCodeDelayArray(msg);
-                strobeRunner.playSound = settings.getSoundOn();
-                if (!strobeRunner.isRunning) {
-                    srThread = new Thread(strobeRunner);
-                    srThread.start();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                Snackbar.make(coordView, e.getMessage(), Snackbar.LENGTH_SHORT)
-                        .show();
-            }
-        }
-    }
-
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -355,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
         private static final int TAB_MORSE = 2;
         private StrobeLightView strobeLightView = new StrobeLightView();
         private MorseView morseView = new MorseView();
+        private MainLightView mainLightView = new MainLightView();
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -366,7 +200,8 @@ public class MainActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position ) {
                 case TAB_LIGHT:
-                    return PlaceholderFragment.newInstance(position + 1);
+                    mainLightView.hasCameraRights = hasCameraRights;
+                    return mainLightView;
                 case TAB_STROBE:
                     strobeLightView.hasCameraRights = hasCameraRights;
                     return strobeLightView;
@@ -374,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                     morseView.hasCameraRights = hasCameraRights;
                     return morseView;
             }
-            return new PlaceholderFragment();
+            return new Fragment();
         }
 
         @Override

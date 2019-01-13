@@ -17,6 +17,8 @@ public class Settings {
         return instance;
     }
 
+    private static boolean _isDirty = false;
+
     private static final String KEY_MORSE_MESSAGE = "MORSE_MESSAGE";
     private static String _morseMessage;
     public String getMorseMessage() {
@@ -24,6 +26,7 @@ public class Settings {
     }
 
     public void setMorseMessage(String morseMessage) {
+        _isDirty = true;
         _morseMessage = morseMessage;
     }
 
@@ -35,6 +38,7 @@ public class Settings {
     }
 
     public void setMorseDuration(double morseDuration) {
+        _isDirty = true;
         _morseDuration = morseDuration;
     }
 
@@ -46,6 +50,7 @@ public class Settings {
     }
 
     public void setStrobeOn(double strobeOn) {
+        _isDirty = true;
         _strobeOn = strobeOn;
     }
 
@@ -57,6 +62,7 @@ public class Settings {
     }
 
     public void setStrobeOff(double strobeOff) {
+        _isDirty = true;
         _strobeOff = strobeOff;
     }
 
@@ -68,6 +74,7 @@ public class Settings {
     }
 
     public void setMorseRepeat(boolean morseRepeat) {
+        _isDirty = true;
         _morseRepeat = morseRepeat;
     }
 
@@ -76,18 +83,20 @@ public class Settings {
 
     public boolean getSoundOn() {return _soundOn;}
 
-    public static void setSoundOn(boolean soundOn) {
+    public void setSoundOn(boolean soundOn) {
+        _isDirty = true;
         _soundOn = soundOn;
     }
 
     private static void deserialize() {
         SharedPreferences sharedPreferences = _context.getSharedPreferences(KEY_SHARED_SETTINGS, Context.MODE_PRIVATE);
         _morseMessage = sharedPreferences.getString(KEY_MORSE_MESSAGE, null);
-        _morseDuration = sharedPreferences.getFloat(KEY_MORSE_DURATION, 200f);
+        _morseDuration = sharedPreferences.getFloat(KEY_MORSE_DURATION, 150f);
         _strobeOn = sharedPreferences.getFloat(KEY_STROBE_ON, 40f);
         _strobeOff = sharedPreferences.getFloat(KEY_STROBE_OFF, 40f);
         _morseRepeat = sharedPreferences.getBoolean(KEY_MORSE_REPEAT, false);
         _soundOn = sharedPreferences.getBoolean(KEY_SOUND_ON, false);
+        _isDirty = false;
     }
 
     public void serialize() {
@@ -100,5 +109,6 @@ public class Settings {
         spEditor.putBoolean(KEY_MORSE_REPEAT, _morseRepeat);
         spEditor.putBoolean(KEY_SOUND_ON, _soundOn);
         spEditor.apply();
+        _isDirty = false;
     }
 }
