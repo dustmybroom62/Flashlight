@@ -5,7 +5,7 @@ android {
     defaultConfig {
         applicationId "com.dustmybroom62.android.flashlight"
         minSdkVersion 14
-        targetSdkVersion 27
+        targetSdkVersion 24
         versionName '1.2'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        strobeRunner.requestStop = true;
+//        strobeRunner.requestStop = true;
         super.onDestroy();
     }
 
@@ -200,13 +200,13 @@ public class MainActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position ) {
                 case TAB_LIGHT:
-                    mainLightView.hasCameraRights = hasCameraRights;
+//                    mainLightView.hasCameraRights = hasCameraRights;
                     return mainLightView;
                 case TAB_STROBE:
-                    strobeLightView.hasCameraRights = hasCameraRights;
+//                    strobeLightView.hasCameraRights = hasCameraRights;
                     return strobeLightView;
                 case TAB_MORSE:
-                    morseView.hasCameraRights = hasCameraRights;
+//                    morseView.hasCameraRights = hasCameraRights;
                     return morseView;
             }
             return new Fragment();

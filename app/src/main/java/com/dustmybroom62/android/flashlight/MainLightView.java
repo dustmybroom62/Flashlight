@@ -15,12 +15,13 @@ import static com.dustmybroom62.android.flashlight.Command.flashlightOff;
 import static com.dustmybroom62.android.flashlight.Command.flashlightOn;
 import static com.dustmybroom62.android.flashlight.Command.setMorseOn;
 import static com.dustmybroom62.android.flashlight.MainActivity.showMessage;
+import static com.dustmybroom62.android.flashlight.MainActivity.hasCameraRights;
 
 public class MainLightView extends Fragment {
 
     private TextView tv1;
     private Switch swPower;
-    public boolean hasCameraRights;
+//    public boolean hasCameraRights;
     private boolean flashOn;
     private Switch swSos;
     private boolean sosOn;

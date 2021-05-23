@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import static com.dustmybroom62.android.flashlight.MainActivity.hasCameraRights;
 
 public class StrobeLightView extends Fragment
 {
@@ -38,7 +39,7 @@ public class StrobeLightView extends Fragment
     private Delay speed = new Delay(750,550, 1);
     private View rootView;
 
-    public boolean hasCameraRights = false;
+//    public boolean hasCameraRights = false;
     private Thread srThread;
 
     public StrobeLightView() { }
