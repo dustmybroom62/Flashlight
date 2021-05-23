@@ -23,9 +23,13 @@ package com.dustmybroom62.android.flashlight;
  * THE SOFTWARE.
  */
 
-import android.hardware.Camera;
+//import android.hardware.Camera;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraAccessException;
+import android.content.Context;
+import android.support.v4.app.ActivityCompat;
 
 public class StrobeRunner implements Runnable {
     public static StrobeRunner getInstance()
@@ -33,8 +37,20 @@ public class StrobeRunner implements Runnable {
         return instance == null ? instance = new StrobeRunner() : instance;
     }
 
+    private static Context appContext;
+    public static void setAppContext(Context context) {
+        appContext = context;
+    }
+
     private static StrobeRunner instance;
 
+    private static CameraManager mCameraManager;
+    private static boolean mHasFlash;
+    public static void setCameraManager(CameraManager cameraManager, boolean hasFlash) {
+        mCameraManager = cameraManager;
+        mHasFlash = hasFlash;
+    }
+    private String mCameraId;
 
     public volatile boolean requestStop = false;
     public volatile boolean isRunning = false;
@@ -45,20 +61,26 @@ public class StrobeRunner implements Runnable {
 //    public volatile StrobeLightConfig controller;
     public volatile String errorMessage = "";
 
-    private void DoPatternElement(Camera cam, Camera.Parameters pOn, Camera.Parameters pOff, ToneGenerator toneGenerator, boolean useSound
+    private void DoPatternElement(ToneGenerator toneGenerator, boolean useSound
             , double delayOn, double delayOff) throws InterruptedException {
         if (delayOn > 0) {
             toneGenerator.stopTone();
             if (useSound) {
                 toneGenerator.startTone(ToneGenerator.TONE_DTMF_9);
             }
-            cam.setParameters(pOn);
+            try {
+                if (mHasFlash) { mCameraManager.setTorchMode(mCameraId, true); }
+            } catch (CameraAccessException ex) { ex.printStackTrace(); }
+
             Thread.sleep(Math.round(delayOn));
             toneGenerator.stopTone();
         }
 
         if (delayOff > 0) {
-            cam.setParameters(pOff);
+            try {
+                if (mHasFlash) { mCameraManager.setTorchMode(mCameraId, false); }
+            } catch (CameraAccessException ex) { ex.printStackTrace(); }
+
             Thread.sleep(Math.round(delayOff));
         }
     }
@@ -71,25 +93,31 @@ public class StrobeRunner implements Runnable {
         requestStop = false;
         isRunning = true;
 
-        Camera cam = Camera.open();
-        cam.startPreview();
+        try {
+            mCameraId = mCameraManager.getCameraIdList()[0];
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+
+//        Camera cam = Camera.open();
+//        cam.startPreview();
         ToneGenerator toneGenerator = new ToneGenerator(AudioManager.STREAM_DTMF, 100);
 
-        Camera.Parameters pOn = cam.getParameters(), pOff = cam.getParameters();
-
-        pOn.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-        pOff.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+//        Camera.Parameters pOn = cam.getParameters(), pOff = cam.getParameters();
+//
+//        pOn.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+//        pOff.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
 
         while(!requestStop) {
             try {
                 for (int i = 0; !requestStop && null != pattern && i < pattern.length; i++) {
-                    DoPatternElement(cam, pOn, pOff, toneGenerator, playSound, pattern[i].on(), pattern[i].off());
+                    DoPatternElement(toneGenerator, playSound, pattern[i].on(), pattern[i].off());
                 }
                 if (requestStop) {
                     break;
                 }
                 for (int i = 0; !requestStop && null != pattern && i < patternAlt.length; i++) {
-                    DoPatternElement(cam, pOn, pOff, toneGenerator, playSound, patternAlt[i].on(), patternAlt[i].off());
+                    DoPatternElement(toneGenerator, playSound, patternAlt[i].on(), patternAlt[i].off());
                 }
                 if (!patternRepeat) {
                     break;
@@ -103,9 +131,14 @@ public class StrobeRunner implements Runnable {
                 errorMessage = "Error setting camera flash status. Your device may be unsupported.";
             }
         }
-        cam.setParameters(pOff);
-        cam.stopPreview();
-        cam.release();
+        try {
+            if (mHasFlash) { mCameraManager.setTorchMode(mCameraId, false); }
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+//        cam.setParameters(pOff);
+//        cam.stopPreview();
+//        cam.release();
 
         isRunning = false;
         requestStop = false;

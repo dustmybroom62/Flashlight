@@ -2,8 +2,9 @@ package com.dustmybroom62.android.flashlight;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
-import android.hardware.Camera;
+import android.hardware.camera2.CameraManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.Snackbar;
@@ -30,7 +31,6 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSION_REQUEST_CAMERA = 1017;
     private static final double SETTINGS_MORSE_CODE_BASE_MILLISECONDS = 200;
-    Camera camera = null;
     static View coordView;
     static boolean hasCameraRights = false;
     private boolean appStartup = false;
@@ -57,6 +57,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Context context = getApplicationContext();
+        boolean bFlashAvailable = context.getPackageManager()
+                .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+
+        StrobeRunner.setAppContext(context);
+
+        StrobeRunner.setCameraManager(
+            (CameraManager) getSystemService(Context.CAMERA_SERVICE),
+            bFlashAvailable
+        );
+
         settings = Settings.getInstance(getBaseContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -72,15 +83,6 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
         MorseCode.appAssets = getAssets();
         appStartup = true;
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
     static void showMessage(String message) {
-        Snackbar.make(coordView, message, Snackbar.LENGTH_SHORT)
+        Snackbar.make(coordView, message, Snackbar.LENGTH_LONG)
                 .show();
     }
 
@@ -174,7 +176,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        strobeRunner.requestStop = true;
+//        strobeRunner = StrobeRunner.getInstance();
+//        strobeRunner.requestStop = true;
         super.onDestroy();
     }
 
@@ -200,13 +203,13 @@ public class MainActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position ) {
                 case TAB_LIGHT:
-                    mainLightView.hasCameraRights = hasCameraRights;
+//                    mainLightView.hasCameraRights = hasCameraRights;
                     return mainLightView;
                 case TAB_STROBE:
-                    strobeLightView.hasCameraRights = hasCameraRights;
+//                    strobeLightView.hasCameraRights = hasCameraRights;
                     return strobeLightView;
                 case TAB_MORSE:
-                    morseView.hasCameraRights = hasCameraRights;
+//                    morseView.hasCameraRights = hasCameraRights;
                     return morseView;
             }
             return new Fragment();
