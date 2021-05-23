@@ -14,9 +14,10 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
+import static com.dustmybroom62.android.flashlight.MainActivity.hasCameraRights;
 
 public class MorseView extends Fragment {
-    public boolean hasCameraRights = false;
+//    public boolean hasCameraRights = false;
     boolean morseOn;
     private Settings settings;
     private EditText etMorseMessage;
