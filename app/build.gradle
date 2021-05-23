@@ -6,7 +6,7 @@ android {
         applicationId "com.dustmybroom62.android.flashlight"
         minSdkVersion 29
         targetSdkVersion 29
-        versionName '2.1' //comment for change
+        versionName '2.1'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
